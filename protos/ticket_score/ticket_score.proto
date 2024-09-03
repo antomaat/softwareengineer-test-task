@@ -1,0 +1,73 @@
+syntax="proto3";
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/antomaat/softwareengineer-test-task/protos";
+
+package protos;
+
+message GetAggregatedCategoryScoresRequest {
+    PeriodEntity period = 1;
+}
+
+message GetAggregatedCategoryScoresResponse {
+    repeated ScoreEntity scores = 1;
+}
+
+message GetScoresByTicketRequest {
+    PeriodEntity period = 1;
+}
+
+message GetScoresByTicketResponse {
+    repeated TicketScoreEntity tickets = 1;
+}
+
+message GetOverallQualityScoresRequest {
+    PeriodEntity period = 1;
+}
+message GetOverallQualityScoresResponse {
+    int64 score = 1; 
+}
+message GetPeriodOverPeriodScoreChangeRequest {
+    PeriodEntity periodFrom = 1;
+    PeriodEntity periodTo = 2;
+}
+message GetPeriodOverPeriodScoreChangeResponse {
+    int64 change = 1;
+}
+
+message TicketScoreEntity {
+    int64 id = 1;
+    repeated TickeToCategoryEntity categories = 2;
+}
+
+message TickeToCategoryEntity {
+    string category = 1;
+    int64 score = 2;
+}
+
+
+message PeriodEntity {
+    google.protobuf.Timestamp start_time = 1;
+    google.protobuf.Timestamp end_time = 2;
+}
+
+message ScoreEntity {
+    string category = 1;
+    int64 ratings = 2;
+    int64 score = 3;
+    repeated ScoreDate scoreDates = 4;
+}
+
+message ScoreDate {
+    google.protobuf.Timestamp date = 1;
+    string unit = 2;
+    int64 score = 3;
+}
+
+service TicketScores {
+    rpc GetAggregatedCategoryScores(GetAggregatedCategoryScoresRequest) returns (GetAggregatedCategoryScoresResponse);
+    rpc GetScoresByTicket(GetScoresByTicketRequest) returns (GetScoresByTicketResponse);
+    rpc GetOverallQualityScores(GetOverallQualityScoresRequest) returns (GetOverallQualityScoresResponse);
+    rpc GetPeriodOverPeriodScoreChange(GetPeriodOverPeriodScoreChangeRequest) returns (GetPeriodOverPeriodScoreChangeResponse);
+}
