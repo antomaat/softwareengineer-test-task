@@ -2,6 +2,7 @@ package grpcservice
 
 import (
 	"context"
+	"log"
 
 	ticketscoreservice "github.com/antomaat/softwareengineering-test-task/app/ticket_score_service"
 	pb "github.com/antomaat/softwareengineering-test-task/protos/ticket_score"
@@ -25,8 +26,8 @@ func (s *TicketScoreServer) GetAggregatedCategoryScores(ctx context.Context, req
     end := request.Period.EndTime.AsTime()
     
     scores, err := s.scoreService.GetAggregatedCategoryScores(start, end)
-
     if err != nil {
+	log.Printf("%s", err.Error())
 	return nil, err
     }
 
@@ -44,7 +45,11 @@ func (s *TicketScoreServer) GetOverallQualityScores(ctx context.Context, request
     end := request.Period.EndTime.AsTime()
 
 
-    score := s.scoreService.GetOverallQualityScores(start, end)
+    score, err := s.scoreService.GetOverallQualityScores(start, end)
+    if err != nil {
+	log.Printf("%s", err.Error())
+	return nil, err
+    }
 
     return &pb.GetOverallQualityScoresResponse{
 	Score: score,
@@ -60,6 +65,7 @@ func (s *TicketScoreServer) GetScoresByTicket(ctx context.Context, request *pb.G
     }
     tickets, err := s.scoreService.GetScoresByTicket(start, end)
     if err != nil {
+	log.Printf("%s", err.Error())
 	return nil, err
     }
     mappedTickets := mapToTickets(tickets)
@@ -76,6 +82,7 @@ func (s *TicketScoreServer) GetPeriodOverPeriodScoreChange(ctx context.Context, 
 
     change, err := s.scoreService.GetPeriodOverPeriodScoreChange(fromStart, fromEnd, toStart, toEnd)
     if err != nil {
+	log.Printf("%s", err.Error())
 	return nil, err
     }
 

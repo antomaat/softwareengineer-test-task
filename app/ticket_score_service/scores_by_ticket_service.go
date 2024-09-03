@@ -1,16 +1,18 @@
 package ticketscoreservice
 
 import (
-        "log"
         "time"
 )
 
 func (s *ScoreService) GetScoresByTicket(start time.Time, end time.Time) ([]*TicketScoreEntity, error) {
     ratings, err := s.db.GetRatingsBetweenTimeByTicket(start, end)
     if err != nil {
-	log.Printf("%v", err)
+	return []*TicketScoreEntity{}, nil 
     }
     categories, err := s.db.GetRatingCategories()
+    if err != nil {
+	return nil, err
+    }
 
     tickets := []*TicketScoreEntity{}
 

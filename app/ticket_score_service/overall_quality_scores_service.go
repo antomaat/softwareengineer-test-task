@@ -2,17 +2,16 @@ package ticketscoreservice
 
 
 import (
-    "log"
     "time"
 )
 
-func (s *ScoreService) GetOverallQualityScores(start time.Time, end time.Time) int64 {
+func (s *ScoreService) GetOverallQualityScores(start time.Time, end time.Time) (int64, error) {
     ratings, err := s.db.GetRatingsBetweenTime(start, end)
     if err != nil {
-	log.Printf("%v", err)
+	return 0, err
     }
     categories, err := s.db.GetRatingCategories()
 
     score, _ := CalculateTicketScoreByRating(ratings, categories)
-    return int64(score) 
+    return int64(score), nil
 }

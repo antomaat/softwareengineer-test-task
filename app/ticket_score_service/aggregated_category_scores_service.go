@@ -1,7 +1,6 @@
 package ticketscoreservice
 
 import (
-	"log"
 	"time"
 
 	"github.com/antomaat/softwareengineering-test-task/app/db"
@@ -10,9 +9,13 @@ import (
 func (s *ScoreService) GetAggregatedCategoryScores(startTime time.Time, endTime time.Time) ([]*ScoreEntity, error) {
 
     categories, err := s.db.GetRatingCategories()
+    if err != nil {
+	return nil, err
+    }
+
     ratingsByCategories, err := s.db.GetRatingsBetweenTimeByCategory(startTime, endTime, categories)
     if err != nil {
-	log.Printf("%v", err)
+	return nil, err
     }
 
     isUnitInWeeks := getRatingsByUnit(startTime, endTime)
@@ -39,7 +42,6 @@ func (s *ScoreService) GetAggregatedCategoryScores(startTime time.Time, endTime 
 	}
 	scores = append(scores, &scoreEntity)
     }
-
 
     return scores, nil
 }

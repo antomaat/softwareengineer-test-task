@@ -16,13 +16,14 @@ var port = ":9000"
 func main() {
     database, err := db.NewDatabase(databaseUrl)
     if err != nil {
+	log.Printf("%v", err.Error())
 	log.Fatalf("Failed to initialize the Database %s", databaseUrl)
     }
     defer database.Close()
 
     lis, err := net.Listen("tcp", port)
     if err != nil {
-        log.Fatalf("Failed to listen: %v", err)
+        log.Fatalf("Failed to listen for tcp connection on port %s: %s", port, err.Error())
     } 
 
     grpcServer := grpc.NewServer()
@@ -31,10 +32,10 @@ func main() {
 
     grpcservice.NewTicketScoreServer(grpcServer, scoreService)
 
+    log.Printf("The grpc server is running on port %s", port)
+
     if err := grpcServer.Serve(lis); err != nil {
         log.Fatalf("Failed to serve grpc:%s", err)
     }
-
-    log.Printf("The grpc server is running on port %s", port)
 
 }

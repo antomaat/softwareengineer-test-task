@@ -22,7 +22,7 @@ func TestGetOverallQualityScoresService(t *testing.T) {
 	CategoriesStub: func()(map[int64]db.RatingCategory, error){
 	    return categories, nil
 	},
-	RatingsBetweenTimeStub: func(start, end time.Time) ([]db.Rating, error) {
+	RatingsBetweenTimeStub: func(start time.Time, end time.Time) ([]db.Rating, error) {
 	    return []db.Rating{
 		{ Id: int64(1), Rating: 4, Ticket_id: 1, Rating_category_id: 1, Created_at: time.Now().AddDate(0, 0, -1)},
 		{ Id: int64(2), Rating: 3, Ticket_id: 1, Rating_category_id: 2, Created_at: time.Now().AddDate(0, 0, -2)},
@@ -37,7 +37,8 @@ func TestGetOverallQualityScoresService(t *testing.T) {
     startTime := time.Now().AddDate(0, 0, -7)
     endTime := time.Now()
 
-    score := service.GetOverallQualityScores(startTime, endTime)
+    score, err := service.GetOverallQualityScores(startTime, endTime)
+    require.NoError(t, err)
     require.Equal(t, int64(83), score)
 
 }
@@ -48,7 +49,7 @@ func TestGetScoresByTicketService(t *testing.T) {
 	CategoriesStub: func()(map[int64]db.RatingCategory, error){
 	    return categories, nil
 	},
-	RatingsByTicketStub: func(start, end time.Time) (map[int64][]db.Rating, error) {
+	RatingsByTicketStub: func(start time.Time, end time.Time) (map[int64][]db.Rating, error) {
 	return map[int64][]db.Rating{ 
 		1 : []db.Rating{
 		    { Id: int64(1), Rating: 4, Ticket_id: 1, Rating_category_id: 1, Created_at: time.Now().AddDate(0, 0, -1)},
@@ -84,7 +85,7 @@ func TestGetPeriodOverPeriodScoreService(t *testing.T) {
 	CategoriesStub: func()(map[int64]db.RatingCategory, error){
 	    return categories, nil
 	},
-	RatingsBetweenTimeStub: func(start, end time.Time) ([]db.Rating, error) {
+	RatingsBetweenTimeStub: func(start time.Time, end time.Time) ([]db.Rating, error) {
 
 	    if (start.Before(time.Now().AddDate(0, 0, -8))) {
 		return []db.Rating{
@@ -117,9 +118,9 @@ func TestGetPeriodOverPeriodScoreService(t *testing.T) {
 
 type MockTicketScoreRepo struct {
     CategoriesStub func() (map[int64]db.RatingCategory, error)
-    RatingsByTicketStub func(start, end time.Time) (map[int64][]db.Rating, error)
-    RatingsBetweenTimeStub func(start, end time.Time) ([]db.Rating, error)
-    RatingsByCategoryStub func(start, end time.Time, categories map[int64]db.RatingCategory) (map[int64][]db.Rating, error)
+    RatingsByTicketStub func(start time.Time, end time.Time) (map[int64][]db.Rating, error)
+    RatingsBetweenTimeStub func(start time.Time, end time.Time) ([]db.Rating, error)
+    RatingsByCategoryStub func(start time.Time, end time.Time, categories map[int64]db.RatingCategory) (map[int64][]db.Rating, error)
 }
 
 func (m *MockTicketScoreRepo) GetRatingCategories() (map[int64]db.RatingCategory, error) {
