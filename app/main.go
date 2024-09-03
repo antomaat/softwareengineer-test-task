@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-var databaseUrl = "database.go"
+var databaseUrl = "database.db"
 var port = ":9000"
 
 func main() {
