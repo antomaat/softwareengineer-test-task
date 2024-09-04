@@ -46,7 +46,7 @@ The app module is separated into three directories
     docker build -t zenklaus:latest . 
 ```
 
-**Run the Docker Container
+** Run the Docker Container
 
 ```
     docker run -p 9000:9000 zenklaus:latest
