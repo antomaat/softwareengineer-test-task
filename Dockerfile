@@ -25,8 +25,11 @@ WORKDIR /root/
 
 COPY --from=builder /workspace/app/bin/app .
 
+COPY ./app/database.db .
+
 RUN chmod +x ./app
 
 EXPOSE 8080
+
 
 CMD ["./app"]
